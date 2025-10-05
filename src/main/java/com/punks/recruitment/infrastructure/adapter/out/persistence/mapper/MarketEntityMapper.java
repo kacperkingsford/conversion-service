@@ -8,24 +8,25 @@ import com.punks.recruitment.infrastructure.adapter.out.persistence.entities.Mar
 
 public class MarketEntityMapper {
 
-    private MarketEntityMapper() {}
+	private MarketEntityMapper() {
+	}
 
-    public static MarketSnapshot toSnapshot(MarketEntity marketEntity) {
-        MarketId id = new MarketId(new Token(marketEntity.getBaseToken()), new Token(marketEntity.getQuoteToken()));
-        return new MarketSnapshot(id, new Price(marketEntity.getPrice()), marketEntity.getEnabled(), marketEntity.getUpdatedAt());
-    }
+	public static MarketSnapshot toSnapshot(MarketEntity marketEntity) {
+		MarketId id = new MarketId(new Token(marketEntity.getBaseToken()), new Token(marketEntity.getQuoteToken()));
+		return new MarketSnapshot(id, new Price(marketEntity.getPrice()), marketEntity.getEnabled(), marketEntity.getUpdatedAt());
+	}
 
-    public static MarketEntity toEntity(MarketSnapshot marketSnapshot) {
-        String base = marketSnapshot.marketId().base().value();
-        String quote = marketSnapshot.marketId().quote().value();
+	public static MarketEntity toEntity(MarketSnapshot marketSnapshot) {
+		String base = marketSnapshot.marketId().base().value();
+		String quote = marketSnapshot.marketId().quote().value();
 
-        MarketEntity marketEntity = new MarketEntity();
-        marketEntity.setBaseToken(base);
-        marketEntity.setQuoteToken(quote);
-        marketEntity.setMarketId(marketSnapshot.marketId().toString());
-        marketEntity.setPrice(marketSnapshot.price().value());
-        marketEntity.setEnabled(marketSnapshot.enabled());
-        marketEntity.setUpdatedAt(marketSnapshot.updatedAt());
-        return marketEntity;
-    }
+		MarketEntity marketEntity = new MarketEntity();
+		marketEntity.setBaseToken(base);
+		marketEntity.setQuoteToken(quote);
+		marketEntity.setMarketId(marketSnapshot.marketId().toString());
+		marketEntity.setPrice(marketSnapshot.price().value());
+		marketEntity.setEnabled(marketSnapshot.enabled());
+		marketEntity.setUpdatedAt(marketSnapshot.updatedAt());
+		return marketEntity;
+	}
 }

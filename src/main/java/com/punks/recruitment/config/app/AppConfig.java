@@ -1,5 +1,6 @@
 package com.punks.recruitment.config.app;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.punks.recruitment.application.port.out.clock.ClockPort;
@@ -36,6 +37,7 @@ public class AppConfig {
 	ObjectMapper objectMapper() {
 		ObjectMapper om = new ObjectMapper();
 		om.registerModule(new JavaTimeModule());
+		om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		return om.findAndRegisterModules();
 	}
 

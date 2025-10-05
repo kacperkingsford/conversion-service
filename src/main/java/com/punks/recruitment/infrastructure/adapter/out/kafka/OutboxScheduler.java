@@ -40,7 +40,8 @@ public class OutboxScheduler {
 	}
 
 	@Scheduled(fixedDelayString = "${outbox.poll-interval:500ms}")
-	@SchedulerLock(name = "outbox-publisher", lockAtLeastFor = "PT0.1S", lockAtMostFor = "PT30S") // TODO can be moved to config as well
+	@SchedulerLock(name = "outbox-publisher", lockAtLeastFor = "PT0.1S", lockAtMostFor = "PT30S")
+	// TODO can be moved to config as well
 	public void publishOutboxBatch() {
 		port.fetchUnpublished(batchSize)
 				.collectList()

@@ -2,7 +2,7 @@ package com.punks.recruitment.infrastructure.common.deserializer.jackson.excepti
 
 public class DomainEventDeserializationException extends RuntimeException {
 
-    public DomainEventDeserializationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public DomainEventDeserializationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

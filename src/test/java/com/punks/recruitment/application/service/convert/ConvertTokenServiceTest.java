@@ -133,7 +133,6 @@ class ConvertTokenServiceTest {
 		ConvertCommand cmd = new ConvertCommand(new CommandId(), Optional.empty(), from, to, new Amount(BigDecimal.ONE), now);
 		Route route = new Route(List.of(new Hop(from, to, new Rate(BigDecimal.ONE), now)));
 
-		ConversionRecord attempted = recordSucceeded(cmd, route, new Amount(BigDecimal.ONE), now);
 		ConversionRecord existing = recordSucceeded(cmd, route, new Amount(BigDecimal.ONE), now);
 
 		when(conversions.findByCommand(any())).thenReturn(Mono.just(Optional.empty()));

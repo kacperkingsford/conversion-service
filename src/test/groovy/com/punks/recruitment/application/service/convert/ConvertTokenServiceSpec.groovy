@@ -22,7 +22,8 @@ import spock.lang.Subject
 import java.math.MathContext
 import java.time.Instant
 
-@Ignore // TODO fix me
+@Ignore
+// TODO fix me
 class ConvertTokenServiceSpec extends Specification {
 
     def conversions = Mock(ConversionRepository)

@@ -21,14 +21,14 @@ class ConversionEntityMapperSpec extends Specification {
     def "toEntity maps all fields incl. idempotency and JSON path"() {
         given:
         def convId = new ConversionId()
-        def cmdId  = new CommandId()
-        def key    = new IdempotencyKey("idem-123")
-        def from   = new Token("BTC")
-        def to     = new Token("USDT")
-        def inAmt  = new Amount(new BigDecimal("0.5"))
+        def cmdId = new CommandId()
+        def key = new IdempotencyKey("idem-123")
+        def from = new Token("BTC")
+        def to = new Token("USDT")
+        def inAmt = new Amount(new BigDecimal("0.5"))
         def outAmt = new Amount(new BigDecimal("15000"))
         def quoted = Instant.parse("2024-01-01T00:00:05Z")
-        def route  = new Route(List.of(
+        def route = new Route(List.of(
                 new Hop(from, to, new Rate(new BigDecimal("30000")), Instant.parse("2024-01-01T00:00:00Z"))
         ))
         def record = new ConversionRecord(convId, cmdId, Optional.of(key), from, to, inAmt, outAmt, route, quoted, ConversionStatus.SUCCEEDED)
@@ -40,15 +40,15 @@ class ConversionEntityMapperSpec extends Specification {
         def entity = ConversionEntityMapper.toEntity(record, routeJson)
 
         then:
-        entity.getCommandId()       == cmdId.value()
-        entity.getIdempotencyKey()  == "idem-123"
-        entity.getTokenFrom()       == "BTC"
-        entity.getTokenTo()         == "USDT"
-        entity.getAmountIn()        == new BigDecimal("0.5")
-        entity.getAmountOut()       == new BigDecimal("15000")
-        entity.getComputedAt()      == quoted
-        entity.getStatus()          == "SUCCEEDED"
-        entity.getPathJson()        instanceof Json
+        entity.getCommandId() == cmdId.value()
+        entity.getIdempotencyKey() == "idem-123"
+        entity.getTokenFrom() == "BTC"
+        entity.getTokenTo() == "USDT"
+        entity.getAmountIn() == new BigDecimal("0.5")
+        entity.getAmountOut() == new BigDecimal("15000")
+        entity.getComputedAt() == quoted
+        entity.getStatus() == "SUCCEEDED"
+        entity.getPathJson() instanceof Json
         entity.getPathJson().asString() == routeJson
     }
 
@@ -78,7 +78,7 @@ class ConversionEntityMapperSpec extends Specification {
         given:
         def e = new ConversionEntity()
         def convUuid = UUID.randomUUID()
-        def cmdUuid  = UUID.randomUUID()
+        def cmdUuid = UUID.randomUUID()
         e.setConversionId(convUuid)
         e.setCommandId(cmdUuid)
         e.setIdempotencyKey("idem-xyz")
@@ -99,20 +99,20 @@ class ConversionEntityMapperSpec extends Specification {
         def rec = ConversionEntityMapper.toDomain(e, route)
 
         then:
-        rec.conversionId()   == new ConversionId(convUuid)
-        rec.commandId()      == new CommandId(cmdUuid)
+        rec.conversionId() == new ConversionId(convUuid)
+        rec.commandId() == new CommandId(cmdUuid)
         rec.idempotencyKey().isPresent()
         rec.idempotencyKey().get() == new IdempotencyKey("idem-xyz")
-        rec.tokenFrom()      == new Token("SOL")
-        rec.tokenTo()        == new Token("USDT")
-        rec.amountIn().value()  == new BigDecimal("10")
+        rec.tokenFrom() == new Token("SOL")
+        rec.tokenTo() == new Token("USDT")
+        rec.amountIn().value() == new BigDecimal("10")
         rec.amountOut().value() == new BigDecimal("1000")
-        rec.computedAt()     == Instant.parse("2024-06-01T00:00:01Z")
-        rec.status()         == ConversionStatus.SUCCEEDED
+        rec.computedAt() == Instant.parse("2024-06-01T00:00:01Z")
+        rec.status() == ConversionStatus.SUCCEEDED
         rec.route().hops().size() == 1
         with(rec.route().hops().get(0)) {
             from() == new Token("SOL")
-            to()   == new Token("USDT")
+            to() == new Token("USDT")
             rate().value() == new BigDecimal("100")
         }
     }
@@ -140,7 +140,7 @@ class ConversionEntityMapperSpec extends Specification {
         then:
         !rec.idempotencyKey().isPresent()
         rec.tokenFrom() == new Token("X")
-        rec.tokenTo()   == new Token("Y")
-        rec.status()    == ConversionStatus.FAILED
+        rec.tokenTo() == new Token("Y")
+        rec.status() == ConversionStatus.FAILED
     }
 }

@@ -18,19 +18,19 @@ class OutboxEventMapperSpec extends Specification {
 
     def "toEntity maps TokenConvertedEvent to OutboxEventEntity with payload and metadata"() {
         given: "a sample domain event"
-        def convId   = new ConversionId()
-        def cmdId    = new CommandId()
-        def from     = new Token("BTC")
-        def to       = new Token("USDT")
+        def convId = new ConversionId()
+        def cmdId = new CommandId()
+        def from = new Token("BTC")
+        def to = new Token("USDT")
         def amountIn = new Amount(new BigDecimal("0.5"))
-        def amountOut= new Amount(new BigDecimal("15000"))
-        def hopTime  = Instant.parse("2024-01-01T00:00:00Z")
-        def hop      = new Hop(from, to, new Rate(new BigDecimal("30000")), hopTime)
-        def route    = new Route(List.of(hop))
-        def event    = new TokenConvertedEvent(convId, cmdId, from, to, amountIn, amountOut, route, hopTime)
+        def amountOut = new Amount(new BigDecimal("15000"))
+        def hopTime = Instant.parse("2024-01-01T00:00:00Z")
+        def hop = new Hop(from, to, new Rate(new BigDecimal("30000")), hopTime)
+        def route = new Route(List.of(hop))
+        def event = new TokenConvertedEvent(convId, cmdId, from, to, amountIn, amountOut, route, hopTime)
 
         and: "payload and timestamp for outbox"
-        def payload   = '{"some":"json"}'
+        def payload = '{"some":"json"}'
         def createdAt = Instant.parse("2024-01-01T00:00:05Z")
 
         when:
@@ -38,8 +38,8 @@ class OutboxEventMapperSpec extends Specification {
 
         then: "metadata is mapped"
         e.getAggregateType() == "Conversion"
-        e.getAggregateId()   == convId.value().toString()
-        e.getEventType()     == "TokenConvertedEvent"
+        e.getAggregateId() == convId.value().toString()
+        e.getEventType() == "TokenConvertedEvent"
 
         and: "payload is wrapped as Json"
         e.getPayloadJson() instanceof Json
@@ -56,15 +56,15 @@ class OutboxEventMapperSpec extends Specification {
 
     def "toEntity accepts empty payload and different ids"() {
         given:
-        def convId   = new ConversionId()
-        def cmdId    = new CommandId()
-        def from     = new Token("ETH")
-        def to       = new Token("EUR")
+        def convId = new ConversionId()
+        def cmdId = new CommandId()
+        def from = new Token("ETH")
+        def to = new Token("EUR")
         def amountIn = new Amount(new BigDecimal("1"))
-        def amountOut= new Amount(new BigDecimal("2500"))
-        def t        = Instant.parse("2025-02-02T12:00:00Z")
-        def route    = new Route(List.of(new Hop(from, to, new Rate(new BigDecimal("2500")), t)))
-        def event    = new TokenConvertedEvent(convId, cmdId, from, to, amountIn, amountOut, route, t)
+        def amountOut = new Amount(new BigDecimal("2500"))
+        def t = Instant.parse("2025-02-02T12:00:00Z")
+        def route = new Route(List.of(new Hop(from, to, new Rate(new BigDecimal("2500")), t)))
+        def event = new TokenConvertedEvent(convId, cmdId, from, to, amountIn, amountOut, route, t)
 
         when:
         def e = OutboxEventMapper.toEntity(event, "", t)
