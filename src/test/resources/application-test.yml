@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: conversion-service
+  sql:
+    init:
+      mode: always
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+  r2dbc:
+    url: placeholder
+    username: conversion
+    password: conversion
+  kafka:
+    bootstrap-servers: placeholder
+    consumer:
+      group-id: conversion-service
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        max.poll.records: 100
+        max.poll.interval.ms: 300000
+    listener:
+       ack-mode: MANUAL_IMMEDIATE
+       concurrency: 1
+    producer:
+      acks: all
+      retries: 1
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        client.id: conversion-service-producer
+
+logging:
+  level:
+    root: INFO
+    com.punks.recruitment: DEBUG
+    org.springframework.kafka: INFO
+
+server:
+  port: 0
+
+topics:
+  convert-commands: convert-commands
+  market-events: market-events
+  conversion-events: conversion-events
+  convert-commands-dlq: convert-commands-dlq
+  market-events-dlq: market-events-dlq
+
+precision:
+  math:
+    context: 20
+    scale: 8
+
+outbox:
+  poll-interval: 2000ms
+  batch-size: 50
+
+route:
+  max-hops: 4
+  max-price-age: 300s
+
+kafka:
+  retry:
+    attempts: 1
+    backoff:
+      delay: 10000
+      multiplier: 1.0
