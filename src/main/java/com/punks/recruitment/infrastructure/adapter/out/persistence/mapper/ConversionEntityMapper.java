@@ -18,19 +18,23 @@ public class ConversionEntityMapper {
 	private ConversionEntityMapper() {
 	}
 
-	public static ConversionEntity toEntity(ConversionRecord record, String routeJson) {
-		ConversionEntity e = new ConversionEntity();
-		e.setCommandId(record.commandId().value());
-		e.setIdempotencyKey(record.idempotencyKey().map(IdempotencyKey::value).orElse(null));
-		e.setTokenFrom(record.tokenFrom().value());
-		e.setTokenTo(record.tokenTo().value());
-		e.setAmountIn(record.amountIn().value());
-		e.setAmountOut(record.amountOut().value());
-		e.setComputedAt(record.computedAt());
-		e.setStatus(record.status().toString());
-		e.setPathJson(Json.of(routeJson));
-		return e;
+	public static ConversionEntity toEntity(ConversionRecord conversionRecord, String routeJson) {
+		ConversionEntity entity = ConversionEntity.builder()
+				.conversionId(conversionRecord.conversionId().value())
+				.commandId(conversionRecord.commandId().value())
+				.idempotencyKey(conversionRecord.idempotencyKey().map(IdempotencyKey::value).orElse(null))
+				.tokenFrom(conversionRecord.tokenFrom().value())
+				.tokenTo(conversionRecord.tokenTo().value())
+				.amountIn(conversionRecord.amountIn().value())
+				.amountOut(conversionRecord.amountOut().value())
+				.computedAt(conversionRecord.computedAt())
+				.status(conversionRecord.status().toString())
+				.pathJson(Json.of(routeJson))
+				.build();
+		entity.markAsNew();
+		return entity;
 	}
+
 
 	public static ConversionRecord toDomain(ConversionEntity entity, Route route) {
 		return new ConversionRecord(

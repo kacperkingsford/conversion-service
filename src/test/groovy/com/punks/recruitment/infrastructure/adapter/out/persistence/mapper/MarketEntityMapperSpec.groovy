@@ -11,15 +11,16 @@ import java.time.Instant
 
 class MarketEntityMapperSpec extends Specification {
 
-    def "toSnapshot maps MarketEntity → MarketSnapshot"() {
+    def "toSnapshot maps MarketEntity to MarketSnapshot"() {
         given:
-        def entity = new MarketEntity()
-        entity.setMarketId("BTC-USDT")
-        entity.setBaseToken("BTC")
-        entity.setQuoteToken("USDT")
-        entity.setPrice(new BigDecimal("30000.00"))
-        entity.setEnabled(true)
-        entity.setUpdatedAt(Instant.parse("2025-01-01T10:00:00Z"))
+        def entity = MarketEntity.builder()
+                .marketId("BTC-USDT")
+                .baseToken("BTC")
+                .quoteToken("USDT")
+                .price(new BigDecimal("30000.00"))
+                .enabled(true)
+                .updatedAt(Instant.parse("2025-01-01T10:00:00Z"))
+                .build()
 
         when:
         def snap = MarketEntityMapper.toSnapshot(entity)
@@ -31,7 +32,7 @@ class MarketEntityMapperSpec extends Specification {
         snap.updatedAt() == Instant.parse("2025-01-01T10:00:00Z")
     }
 
-    def "toEntity maps MarketSnapshot → MarketEntity"() {
+    def "toEntity maps MarketSnapshot to MarketEntity"() {
         given:
         def id = new MarketId(new Token("ETH"), new Token("USDT"))
         def snap = new MarketSnapshot(
@@ -53,15 +54,16 @@ class MarketEntityMapperSpec extends Specification {
         entity.getMarketId() == id.toString()
     }
 
-    def "round-trip entity → snapshot → entity preserves tokens/price/enabled/updatedAt"() {
+    def "round-trip entity -> snapshot -> entity preserves tokens/price/enabled/updatedAt"() {
         given:
-        def source = new MarketEntity()
-        source.setMarketId("ignored-format")
-        source.setBaseToken("SOL")
-        source.setQuoteToken("USDT")
-        source.setPrice(new BigDecimal("100.000"))
-        source.setEnabled(true)
-        source.setUpdatedAt(Instant.parse("2024-06-01T00:00:00Z"))
+        def source = MarketEntity.builder()
+                .marketId("ignored-format")
+                .baseToken("SOL")
+                .quoteToken("USDT")
+                .price(new BigDecimal("100.000"))
+                .enabled(true)
+                .updatedAt(Instant.parse("2024-06-01T00:00:00Z"))
+                .build()
 
         when:
         def snap = MarketEntityMapper.toSnapshot(source)
@@ -83,21 +85,22 @@ class MarketEntityMapperSpec extends Specification {
         target.getMarketId() == snap.marketId().toString()
     }
 
-    def "toSnapshot derives MarketId from base/quote even if entity.marketId differs"() {
+    def "toSnapshot derives MarketId from base/quote even if marketId in entity differs"() {
         given:
-        def entity = new MarketEntity()
-        entity.setMarketId("WRONG_FORMAT_SHOULD_BE_IGNORED")
-        entity.setBaseToken("ADA")
-        entity.setQuoteToken("EUR")
-        entity.setPrice(new BigDecimal("1.23"))
-        entity.setEnabled(false)
-        entity.setUpdatedAt(Instant.parse("2025-02-01T12:00:00Z"))
+        def entity = MarketEntity.builder()
+                .marketId("USDT-EUR")
+                .baseToken("USD")
+                .quoteToken("EUR")
+                .price(new BigDecimal("1.23"))
+                .enabled(false)
+                .updatedAt(Instant.parse("2025-02-01T12:00:00Z"))
+                .build()
 
         when:
         def snap = MarketEntityMapper.toSnapshot(entity)
 
         then:
-        snap.marketId() == new MarketId(new Token("ADA"), new Token("EUR"))
+        snap.marketId() == new MarketId(new Token("USD"), new Token("EUR"))
         snap.price().value() == new BigDecimal("1.23")
         !snap.enabled()
         snap.updatedAt() == Instant.parse("2025-02-01T12:00:00Z")

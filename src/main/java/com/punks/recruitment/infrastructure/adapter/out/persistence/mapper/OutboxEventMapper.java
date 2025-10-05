@@ -12,14 +12,14 @@ public class OutboxEventMapper {
 	}
 
 	public static OutboxEventEntity toEntity(TokenConvertedEvent event, String payloadJson, Instant createdAt) {
-		OutboxEventEntity entity = new OutboxEventEntity();
-		entity.setAggregateType("Conversion");
-		entity.setAggregateId(event.conversionId().value().toString());
-		entity.setEventType("TokenConvertedEvent");
-		entity.setPayloadJson(Json.of(payloadJson));
-		entity.setCreatedAt(createdAt);
-		entity.setPublished(Boolean.FALSE);
-		entity.setPublishedAt(null);
-		return entity;
+		return OutboxEventEntity.builder()
+				.aggregateType("Conversion")
+				.aggregateId(event.conversionId().value().toString())
+				.eventType("TokenConvertedEvent")
+				.payloadJson(Json.of(payloadJson))
+				.createdAt(createdAt)
+				.published(false)
+				.publishedAt(null)
+				.build();
 	}
 }

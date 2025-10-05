@@ -1,6 +1,10 @@
 package com.punks.recruitment.infrastructure.adapter.out.persistence.entities;
 
 import io.r2dbc.postgresql.codec.Json;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -9,6 +13,10 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Table("outbox")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OutboxEventEntity {
 	@Id
 	@Column("event_id")
@@ -34,68 +42,4 @@ public class OutboxEventEntity {
 
 	@Column("published_at")
 	private Instant publishedAt;
-
-	public UUID getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(UUID eventId) {
-		this.eventId = eventId;
-	}
-
-	public String getAggregateType() {
-		return aggregateType;
-	}
-
-	public void setAggregateType(String aggregateType) {
-		this.aggregateType = aggregateType;
-	}
-
-	public String getAggregateId() {
-		return aggregateId;
-	}
-
-	public void setAggregateId(String aggregateId) {
-		this.aggregateId = aggregateId;
-	}
-
-	public String getEventType() {
-		return eventType;
-	}
-
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
-
-	public Json getPayloadJson() {
-		return payloadJson;
-	}
-
-	public void setPayloadJson(Json payloadJson) {
-		this.payloadJson = payloadJson;
-	}
-
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Boolean getPublished() {
-		return published;
-	}
-
-	public void setPublished(Boolean published) {
-		this.published = published;
-	}
-
-	public Instant getPublishedAt() {
-		return publishedAt;
-	}
-
-	public void setPublishedAt(Instant publishedAt) {
-		this.publishedAt = publishedAt;
-	}
 }

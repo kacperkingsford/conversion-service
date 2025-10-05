@@ -14,15 +14,15 @@ import java.time.Instant
 class MarketUpdateServiceSpec extends Specification {
 
     def markets = Mock(MarketStateRepositoryPort)
-    def cache = Mock(MarketCachePort)
+    def cache   = Mock(MarketCachePort)
     def service = new MarketUpdateService(markets, cache)
 
     def "onPriceChanged should upsert snapshot and push price to cache"() {
         given:
-        def marketId = new MarketId(new Token("BTC"), new Token("USDT"))
-        def price = new Price(new BigDecimal("30000"))
+        def marketId  = new MarketId(new Token("BTC"), new Token("USDT"))
+        def price     = new Price(new BigDecimal("30000"))
         def timestamp = Instant.parse("2025-01-01T00:00:00Z")
-        def event = new MarketPriceChanged(marketId, price, timestamp)
+        def event     = new MarketPriceChanged(marketId, price, timestamp)
 
         when:
         StepVerifier.create(service.onPriceChanged(event))
@@ -48,12 +48,12 @@ class MarketUpdateServiceSpec extends Specification {
 
     def "onMarketEnabled should upsert with event price and enable when market exists"() {
         given:
-        def marketId = new MarketId(new Token("ETH"), new Token("USDT"))
-        def existing = new MarketSnapshot(marketId, new Price(new BigDecimal("2000.00")), false,
+        def marketId       = new MarketId(new Token("ETH"), new Token("USDT"))
+        def existing       = new MarketSnapshot(marketId, new Price(new BigDecimal("2000.00")), false,
                 Instant.parse("2025-01-01T10:00:00Z"))
-        def eventPrice = new Price(new BigDecimal("2100.55"))
+        def eventPrice     = new Price(new BigDecimal("2100.55"))
         def eventTimestamp = Instant.parse("2025-01-01T10:01:00Z")
-        def event = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "Enabling")
+        def event          = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "Enabling")
 
         when:
         StepVerifier.create(service.onMarketEnabled(event)).verifyComplete()
@@ -80,10 +80,10 @@ class MarketUpdateServiceSpec extends Specification {
 
     def "onMarketEnabled should be NOOP when market not found"() {
         given:
-        def marketId = new MarketId(new Token("DOGE"), new Token("EUR"))
-        def eventPrice = new Price(new BigDecimal("0.10"))
+        def marketId       = new MarketId(new Token("DOGE"), new Token("EUR"))
+        def eventPrice     = new Price(new BigDecimal("0.10"))
         def eventTimestamp = Instant.parse("2025-02-02T12:00:00Z")
-        def event = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "updating...")
+        def event          = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "updating...")
 
         when:
         StepVerifier.create(service.onMarketEnabled(event)).verifyComplete()
@@ -96,12 +96,12 @@ class MarketUpdateServiceSpec extends Specification {
 
     def "onMarketDisabled should upsert with event price and disable when market exists"() {
         given:
-        def marketId = new MarketId(new Token("SOL"), new Token("USDT"))
-        def existing = new MarketSnapshot(marketId, new Price(new BigDecimal("100.00")), true,
+        def marketId       = new MarketId(new Token("SOL"), new Token("USDT"))
+        def existing       = new MarketSnapshot(marketId, new Price(new BigDecimal("100.00")), true,
                 Instant.parse("2025-03-01T00:00:00Z"))
-        def eventPrice = new Price(new BigDecimal("90.50"))
+        def eventPrice     = new Price(new BigDecimal("90.50"))
         def eventTimestamp = Instant.parse("2025-03-01T00:05:00Z")
-        def event = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "Disabling...")
+        def event          = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "Disabling...")
 
         when:
         StepVerifier.create(service.onMarketDisabled(event)).verifyComplete()
@@ -128,10 +128,10 @@ class MarketUpdateServiceSpec extends Specification {
 
     def "onMarketDisabled should be NOOP when market not found"() {
         given:
-        def marketId = new MarketId(new Token("X"), new Token("Y"))
-        def eventPrice = new Price(new BigDecimal("1.23"))
+        def marketId       = new MarketId(new Token("X"), new Token("Y"))
+        def eventPrice     = new Price(new BigDecimal("1.23"))
         def eventTimestamp = Instant.parse("2025-04-01T00:00:00Z")
-        def event = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "sync")
+        def event          = new MarketStatusChanged(marketId, eventPrice, eventTimestamp, "sync")
 
         when:
         StepVerifier.create(service.onMarketDisabled(event)).verifyComplete()

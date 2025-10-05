@@ -6,6 +6,7 @@ import com.punks.recruitment.application.port.in.convert.ConvertTokenUseCase;
 import com.punks.recruitment.application.service.convert.dto.ConversionResult;
 import com.punks.recruitment.infrastructure.adapter.in.kafka.message.ConvertTokenMessage;
 import com.punks.recruitment.infrastructure.adapter.in.kafka.message.InboundMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class ConvertCommandListener {
-
-	private static final Logger log = LoggerFactory.getLogger(ConvertCommandListener.class);
 
 	private final ConvertTokenUseCase convertUseCase;
 	private final ObjectMapper om;
@@ -75,7 +75,6 @@ public class ConvertCommandListener {
 				convertUseCase.convert(cmd)
 						.doOnSuccess(__ -> log.debug("ConvertCommand succeeded, key={} offset={}", key, rec.offset()))
 						.doOnError(err -> log.warn("ConvertCommand retryable key={} offset={}", key, rec.offset(), err));
-
 		pipeline.block();
 	}
 

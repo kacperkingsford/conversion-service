@@ -74,8 +74,7 @@ public class ConvertTokenService implements ConvertTokenUseCase {
 	}
 
 	private boolean isNew(ConversionRecord saved, ConversionRecord attempted) {
-		return true; // TODO FIX
-//		return saved.conversionId().equals(attempted.conversionId());
+		return saved.conversionId().equals(attempted.conversionId());
 	}
 }
 

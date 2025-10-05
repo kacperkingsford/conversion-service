@@ -4,11 +4,10 @@ import com.punks.recruitment.application.port.out.clock.ClockPort;
 import com.punks.recruitment.application.port.out.outbox.OutboxPollingPort;
 import com.punks.recruitment.application.port.out.outbox.OutboxRecord;
 import com.punks.recruitment.config.properties.TopicsProperties;
+import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,9 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class OutboxScheduler {
-
-	private static final Logger log = LoggerFactory.getLogger(OutboxScheduler.class);
 
 	private final OutboxPollingPort port;
 	private final ClockPort clock;
@@ -40,8 +38,7 @@ public class OutboxScheduler {
 	}
 
 	@Scheduled(fixedDelayString = "${outbox.poll-interval:500ms}")
-	@SchedulerLock(name = "outbox-publisher", lockAtLeastFor = "PT0.1S", lockAtMostFor = "PT30S")
-	// TODO can be moved to config as well
+	@SchedulerLock(name = "outbox-publisher", lockAtLeastFor = "PT0.1S", lockAtMostFor = "PT30S") // TODO can be moved to config as well
 	public void publishOutboxBatch() {
 		port.fetchUnpublished(batchSize)
 				.collectList()

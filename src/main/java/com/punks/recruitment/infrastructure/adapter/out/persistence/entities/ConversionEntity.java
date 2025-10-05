@@ -1,7 +1,13 @@
 package com.punks.recruitment.infrastructure.adapter.out.persistence.entities;
 
 import io.r2dbc.postgresql.codec.Json;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -10,7 +16,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Table("conversions")
-public class ConversionEntity {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ConversionEntity implements Persistable<UUID> {
 	@Id
 	@Column("conversion_id")
 	private UUID conversionId;
@@ -42,83 +52,20 @@ public class ConversionEntity {
 	@Column("status")
 	private String status;
 
-	public UUID getConversionId() {
+	@Transient
+	private boolean isNew = false;
+
+	public void markAsNew() {
+		this.isNew = true;
+	}
+
+	@Override
+	public UUID getId() {
 		return conversionId;
 	}
 
-	public void setConversionId(UUID conversionId) {
-		this.conversionId = conversionId;
-	}
-
-	public UUID getCommandId() {
-		return commandId;
-	}
-
-	public void setCommandId(UUID commandId) {
-		this.commandId = commandId;
-	}
-
-	public String getIdempotencyKey() {
-		return idempotencyKey;
-	}
-
-	public void setIdempotencyKey(String idempotencyKey) {
-		this.idempotencyKey = idempotencyKey;
-	}
-
-	public String getTokenFrom() {
-		return tokenFrom;
-	}
-
-	public void setTokenFrom(String tokenFrom) {
-		this.tokenFrom = tokenFrom;
-	}
-
-	public String getTokenTo() {
-		return tokenTo;
-	}
-
-	public void setTokenTo(String tokenTo) {
-		this.tokenTo = tokenTo;
-	}
-
-	public BigDecimal getAmountIn() {
-		return amountIn;
-	}
-
-	public void setAmountIn(BigDecimal amountIn) {
-		this.amountIn = amountIn;
-	}
-
-	public BigDecimal getAmountOut() {
-		return amountOut;
-	}
-
-	public void setAmountOut(BigDecimal amountOut) {
-		this.amountOut = amountOut;
-	}
-
-	public Json getPathJson() {
-		return pathJson;
-	}
-
-	public void setPathJson(Json pathJson) {
-		this.pathJson = pathJson;
-	}
-
-	public Instant getComputedAt() {
-		return computedAt;
-	}
-
-	public void setComputedAt(Instant computedAt) {
-		this.computedAt = computedAt;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	@Override
+	public boolean isNew() {
+		return isNew;
 	}
 }

@@ -20,13 +20,13 @@ public class MarketEntityMapper {
 		String base = marketSnapshot.marketId().base().value();
 		String quote = marketSnapshot.marketId().quote().value();
 
-		MarketEntity marketEntity = new MarketEntity();
-		marketEntity.setBaseToken(base);
-		marketEntity.setQuoteToken(quote);
-		marketEntity.setMarketId(marketSnapshot.marketId().toString());
-		marketEntity.setPrice(marketSnapshot.price().value());
-		marketEntity.setEnabled(marketSnapshot.enabled());
-		marketEntity.setUpdatedAt(marketSnapshot.updatedAt());
-		return marketEntity;
+		return MarketEntity.builder()
+				.baseToken(base)
+				.quoteToken(quote)
+				.marketId(marketSnapshot.marketId().toString())
+				.price(marketSnapshot.price().value())
+				.enabled(marketSnapshot.enabled())
+				.updatedAt(marketSnapshot.updatedAt())
+				.build();
 	}
 }

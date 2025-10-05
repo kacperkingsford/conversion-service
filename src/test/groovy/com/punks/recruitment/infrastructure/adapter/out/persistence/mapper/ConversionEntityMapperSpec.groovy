@@ -76,19 +76,21 @@ class ConversionEntityMapperSpec extends Specification {
 
     def "toDomain maps entity to domain with provided Route and present idempotency"() {
         given:
-        def e = new ConversionEntity()
         def convUuid = UUID.randomUUID()
         def cmdUuid = UUID.randomUUID()
-        e.setConversionId(convUuid)
-        e.setCommandId(cmdUuid)
-        e.setIdempotencyKey("idem-xyz")
-        e.setTokenFrom("SOL")
-        e.setTokenTo("USDT")
-        e.setAmountIn(new BigDecimal("10"))
-        e.setAmountOut(new BigDecimal("1000"))
-        e.setComputedAt(Instant.parse("2024-06-01T00:00:01Z"))
-        e.setStatus("SUCCEEDED")
-        e.setPathJson(Json.of('{"hops":[]}'))
+
+        def e = ConversionEntity.builder()
+                .conversionId(convUuid)
+                .commandId(cmdUuid)
+                .idempotencyKey("idem-xyz")
+                .tokenFrom("SOL")
+                .tokenTo("USDT")
+                .amountIn(new BigDecimal("10"))
+                .amountOut(new BigDecimal("1000"))
+                .computedAt(Instant.parse("2024-06-01T00:00:01Z"))
+                .status("SUCCEEDED")
+                .pathJson(Json.of('{"hops":[]}'))
+                .build()
 
         and:
         def route = new Route(List.of(
@@ -119,17 +121,18 @@ class ConversionEntityMapperSpec extends Specification {
 
     def "toDomain maps entity to domain with empty idempotency when null"() {
         given:
-        def e = new ConversionEntity()
-        e.setConversionId(UUID.randomUUID())
-        e.setCommandId(UUID.randomUUID())
-        e.setIdempotencyKey(null)
-        e.setTokenFrom("X")
-        e.setTokenTo("Y")
-        e.setAmountIn(new BigDecimal("1"))
-        e.setAmountOut(new BigDecimal("2"))
-        e.setComputedAt(Instant.parse("2025-01-01T00:00:00Z"))
-        e.setStatus("FAILED")
-        e.setPathJson(Json.of('{"hops":[]}'))
+        def e = ConversionEntity.builder()
+                .conversionId(UUID.randomUUID())
+                .commandId(UUID.randomUUID())
+                .idempotencyKey(null)
+                .tokenFrom("X")
+                .tokenTo("Y")
+                .amountIn(new BigDecimal("1"))
+                .amountOut(new BigDecimal("2"))
+                .computedAt(Instant.parse("2025-01-01T00:00:00Z"))
+                .status("FAILED")
+                .pathJson(Json.of('{"hops":[]}'))
+                .build()
 
         and:
         def route = new Route(List.of())

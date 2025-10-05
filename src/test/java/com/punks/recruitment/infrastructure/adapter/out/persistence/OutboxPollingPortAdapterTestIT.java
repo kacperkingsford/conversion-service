@@ -73,14 +73,14 @@ class OutboxPollingPortAdapterTestIT extends AbstractR2dbcPostgresIT {
 	}
 
 	private OutboxEventEntity newOutbox(boolean published, Instant createdAt, String payloadJson) {
-		OutboxEventEntity e = new OutboxEventEntity();
-		e.setAggregateType("conversion");
-		e.setAggregateId("agg-1");
-		e.setEventType("CREATED");
-		e.setPayloadJson(Json.of(payloadJson));
-		e.setCreatedAt(createdAt);
-		e.setPublished(published);
-		e.setPublishedAt(null);
-		return e;
+		return OutboxEventEntity.builder()
+				.aggregateType("conversion")
+				.aggregateId("agg-1")
+				.eventType("CREATED")
+				.payloadJson(Json.of(payloadJson))
+				.createdAt(createdAt)
+				.published(published)
+				.publishedAt(null)
+				.build();
 	}
 }

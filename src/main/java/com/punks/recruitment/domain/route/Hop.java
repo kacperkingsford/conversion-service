@@ -4,5 +4,4 @@ import com.punks.recruitment.domain.money.Rate;
 
 import java.time.Instant;
 
-public record Hop(Token from, Token to, Rate rate, Instant quotedAt) {
-}
+public record Hop(Token from, Token to, Rate rate, Instant quotedAt) {}

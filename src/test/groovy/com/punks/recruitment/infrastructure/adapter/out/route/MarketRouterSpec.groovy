@@ -187,8 +187,8 @@ class MarketRouterSpec extends Specification {
                 buildMarketSnapshot(B, C, "3.0", now),
                 buildMarketSnapshot(D, C, "10.0", now)
         ]
-        def expectedCutoff = now - maxAge
-        def expectedProduct = new BigDecimal("0.6")
+        def expectedCutoff   = now - maxAge
+        def expectedProduct  = new BigDecimal("0.6")
 
         when:
         def mono = router.findAnyRoute(A, D, 4, maxAge)

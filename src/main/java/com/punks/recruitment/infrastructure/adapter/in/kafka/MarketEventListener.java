@@ -6,9 +6,8 @@ import com.punks.recruitment.application.port.in.market.MarketUpdateUseCase;
 import com.punks.recruitment.infrastructure.adapter.in.kafka.message.InboundMapper;
 import com.punks.recruitment.infrastructure.adapter.in.kafka.message.MarketEventMessage;
 import com.punks.recruitment.infrastructure.adapter.in.kafka.message.exception.InvalidMarketEventTypeException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.Acknowledgment;
@@ -19,9 +18,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class MarketEventListener {
-
-	private static final Logger log = LoggerFactory.getLogger(MarketEventListener.class);
 
 	private final MarketUpdateUseCase marketUpdateUseCase;
 	private final ObjectMapper om;
@@ -78,8 +76,7 @@ public class MarketEventListener {
 			default -> Mono.error(new InvalidMarketEventTypeException(msg.type()));
 		};
 
-		work
-				.doOnSuccess(__ -> log.info("MarketEvent OK type={} key={} offset={}", msg.type(), key, rec.offset()))
+		work.doOnSuccess(__ -> log.info("MarketEvent OK type={} key={} offset={}", msg.type(), key, rec.offset()))
 				.doOnError(err -> log.error("MarketEvent retryable type={} key={} offset={} -> {}", msg.type(), key, rec.offset(), err.toString()))
 				.block();
 	}
